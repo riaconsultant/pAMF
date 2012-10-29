@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" pageTitle="PHP Amf Sample">
+	<fx:Script>
+		<![CDATA[
+			import com.remote.vo.Page;
+			
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.utils.ObjectUtil;
+			
+			protected function sayHelloResultHandler(event:ResultEvent):void
+			{
+				txtId.text=event.result.toString();
+			}
+			protected function callObjectResultHandler(event:ResultEvent):void
+			{
+				txtId.text = ObjectUtil.toString(event.result as Page);
+			}
+			
+			protected function faultHandler(event:FaultEvent):void
+			{
+				txtId.text=event.messageId;
+			}
+			
+			protected function sayHelloClick(event:MouseEvent):void
+			{
+				remoteService.sayHello();
+			}
+			protected function callObjectClick(event:MouseEvent):void
+			{
+				remoteService.callObject();
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:RemoteObject id="remoteService" destination="SampleService" source="SampleService" endpoint="http://amf.brandanalytic.in/gateway.php" fault="faultHandler(event)">
+			<s:method name="sayHello" result="sayHelloResultHandler(event)" />
+			<s:method name="callObject" result="callObjectResultHandler(event)" />
+		</s:RemoteObject>
+	</fx:Declarations>
+	<s:Button x="12" y="19" label="Say Hello" click="sayHelloClick(event)"/>
+	<s:Button x="95" y="19" label="Call Object" click="callObjectClick(event)"/>
+	<s:TextArea id="txtId" x="10" y="48" width="500" height="400"/>
+</s:Application>
